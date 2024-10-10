@@ -1,0 +1,65 @@
+-- DDL
+CREATE TABLE Anak (
+    id_anak INT AUTO_INCREMENT PRIMARY KEY,
+    nama_anak VARCHAR(255),
+    usia INT,
+    preferensi_makanan VARCHAR(255),
+    alergi VARCHAR(255),
+    kebutuhan_khusus VARCHAR(255)
+);
+
+CREATE TABLE Rencana_Makanan (
+    id_rencana INT AUTO_INCREMENT PRIMARY KEY,
+    id_anak INT,
+    jenis_makanan VARCHAR(255),
+    waktu_makan VARCHAR(255),
+    bahan_makanan VARCHAR(255),
+    kebutuhan_gizi VARCHAR(255),
+    FOREIGN KEY (id_anak) REFERENCES Anak(id_anak)
+);
+
+CREATE TABLE Resep (
+    id_resep INT AUTO_INCREMENT PRIMARY KEY,
+    nama_resep VARCHAR(255),
+    bahan TEXT,
+    langkah TEXT,
+    kebutuhan_gizi VARCHAR(255)
+);
+
+-- DQL
+SELECT * FROM Anak;
+SELECT * FROM Rencana_Makanan WHERE id_anak = ?;
+SELECT * FROM Resep WHERE nama_resep LIKE ?;
+
+-- DML
+INSERT INTO Anak (nama_anak, usia, preferensi_makanan, alergi, kebutuhan_khusus) VALUES (?, ?, ?, ?, ?);
+UPDATE Anak SET usia = ? WHERE id_anak = ?;
+DELETE FROM Anak WHERE id_anak = ?;
+
+-- Store Procedures DQL
+DELIMITER //
+
+CREATE PROCEDURE GetAnak()
+BEGIN
+    SELECT * FROM Anak;
+END //
+
+CREATE PROCEDURE GetRencanaMakananByAnak(IN anak_id INT)
+BEGIN
+    SELECT * FROM Rencana_Makanan WHERE id_anak = anak_id;
+END //
+
+CREATE PROCEDURE GetResepByNama(IN resep_name VARCHAR(255))
+BEGIN
+    SELECT * FROM Resep WHERE nama_resep LIKE CONCAT('%', resep_name, '%');
+END //
+
+DELIMITER ;
+
+-- Store Procedures DML
+DELIMITER //
+
+CREATE PROCEDURE AddAnak(IN nama VARCHAR(255), IN usia INT, IN preferensi VARCHAR(255), IN alergi VARCHAR(255), IN kebutuhan VARCHAR(255))
+BEGIN
+    INSERT INTO Anak (nama_anak, usia, preferensi_makanan, alergi, kebutuhan_khusus) VALUES (nama, usia, preferensi, alergi, kebutuhan);
+END //
